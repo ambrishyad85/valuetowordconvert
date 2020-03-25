@@ -1,0 +1,102 @@
+﻿@model MVCValueToWord.Models.CLSValueToWord
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+<h2>Index</h2>
+
+
+@*@using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()*@
+
+<div class="form-horizontal">
+    <h4>CLSValueToWord</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.NumericToWords, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.NumericToWords, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.NumericToWords, "", new { @class = "text-danger" })
+        </div>
+        <div>
+
+        </div>
+    </div>
+    <div id="dataDiv"></div>
+    <table id="table" style="display:none ; margin-left:200px">
+        <tr>
+            <td><b>Show</b></td>
+        </tr>
+        <tr>
+            <td width="300px">Name : </td>
+            <td><label id="lblName"></label></td>
+        </tr>
+        <tr>
+            <td>NumericToWords : </td>
+            <td><label id="lblNumericToWords"></label></td>
+        </tr>
+    </table>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" onclick="ShowCurrentTime()" />
+            @*onclick="ShowCurrentTime()"*@
+        </div>
+    </div>
+</div>
+@*}*@
+
+
+
+<script type="text/javascript">
+    function ShowCurrentTime() {
+        debugger
+        $("#table").hide();
+        if ($("#Name").val() == "")
+            alert("name cannot be empty");
+        else if ($("#NumericToWords").val() == "")
+            alert("Value cannot be empty");
+        else {
+             var dataa = JSON.stringify({ Name: $("#Name").val(), Value: $("#NumericToWords").val()})
+            $.ajax({
+                type: "Post",
+                url: "http://localhost:51859/api/ValueToWord/Create",
+                data: dataa,
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    $("#dataDiv").empty();
+                    $("#table").show();
+                    $("#lblName").html(result.Name);
+                    $("#lblNumericToWords").html(result.NumericToWords);
+                },
+                error: function (result) {
+                    $("#table").hide();
+                    $("#dataDiv").html("Error in fetch");
+                }
+            });
+        }
+      
+    }
+
+</script>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
